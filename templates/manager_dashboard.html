@@ -1,0 +1,41 @@
+{% extends 'layout.html' %}
+{% block content %}
+<h1>Manager Dashboard</h1>
+<section>
+  <h2>{{ branch.name }} ({{ branch.location }})</h2>
+  <h3>Stock</h3>
+  <table>
+    <thead><tr><th>Product</th><th>SKU</th><th>Quantity</th><th>Threshold</th><th>Status</th></tr></thead>
+    <tbody>
+      {% for item in stocks %}
+        <tr class="{% if item.is_low %}low-stock{% endif %}"><td>{{ item.product.name }}</td><td>{{ item.product.sku }}</td><td>{{ item.quantity }}</td><td>{{ item.alert_threshold }}</td><td>{{ 'LOW' if item.is_low else 'OK' }}</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>
+<section>
+  <h3>Low stock alerts</h3>
+  <table>
+    <thead><tr><th>Product</th><th>Qty</th><th>Threshold</th></tr></thead>
+    <tbody>
+      {% for item in low_stock_alerts %}
+        <tr class="low-stock"><td>{{ item.product.name }}</td><td>{{ item.quantity }}</td><td>{{ item.alert_threshold }}</td></tr>
+      {% endfor %}
+      {% if not low_stock_alerts %}
+        <tr><td colspan="3">No low stock alerts for your branch.</td></tr>
+      {% endif %}
+    </tbody>
+  </table>
+</section>
+<section>
+  <h3>Recent Sales</h3>
+  <table>
+    <thead><tr><th>Sale ID</th><th>Payment</th><th>Total</th><th>Date</th></tr></thead>
+    <tbody>
+      {% for sale in sales %}
+        <tr><td>{{ sale.id }}</td><td>{{ sale.payment_type }}</td><td>{{ sale.total_amount }}</td><td>{{ sale.date }}</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>
+{% endblock %}

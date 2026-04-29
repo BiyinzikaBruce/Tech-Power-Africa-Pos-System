@@ -1,0 +1,30 @@
+{% extends 'layout.html' %}
+{% block content %}
+<h1>Products</h1>
+<section class="card">
+  <form method="post">
+    <label>Product name</label>
+    <input type="text" name="name" required>
+    <label>SKU</label>
+    <input type="text" name="sku" required>
+    <label>Category</label>
+    <input type="text" name="category" placeholder="Desktop, Laptop, Accessory">
+    <label>Cost price</label>
+    <input type="number" name="cost" step="0.01" value="0.00" required>
+    <label>Selling price</label>
+    <input type="number" name="price" step="0.01" value="0.00" required>
+    <button type="submit">Add Product</button>
+  </form>
+</section>
+<section>
+  <h2>Products</h2>
+  <table>
+    <thead><tr><th>SKU</th><th>Name</th><th>Category</th><th>Cost</th><th>Price</th><th>Profit</th><th>Margin</th></tr></thead>
+    <tbody>
+      {% for product in products %}
+        <tr><td>{{ product.sku }}</td><td>{{ product.name }}</td><td>{{ product.category or '-' }}</td><td>{{ product.cost }}</td><td>{{ product.price }}</td><td>{{ product.profit | round(2) }}</td><td>{{ product.margin | round(1) }}%</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>
+{% endblock %}

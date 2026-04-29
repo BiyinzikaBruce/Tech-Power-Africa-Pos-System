@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sign Up - Tech Power Africa POS</title>
+  <link rel="stylesheet" href="/static/style.css">
+  <style>
+    .signup-container {
+      max-width: 520px;
+      margin: 3rem auto;
+      padding: 2rem;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+    }
+    .signup-container h1 {
+      text-align: center;
+      margin-bottom: 1.5rem;
+      color: #0d4d8b;
+    }
+    .form-group {
+      margin-bottom: 1rem;
+    }
+    .form-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+      color: #333;
+    }
+    .form-group input, .form-group select {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 1rem;
+    }
+    .form-group select option {
+      padding: 0.5rem;
+    }
+    .plan-options {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 1rem;
+      margin: 1.5rem 0;
+    }
+    .plan-option {
+      padding: 1rem;
+      border: 2px solid #ddd;
+      border-radius: 8px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    .plan-option:hover {
+      border-color: #0d4d8b;
+      background: #f5f9ff;
+    }
+    .plan-option input[type="radio"] {
+      margin-bottom: 0.5rem;
+    }
+    .plan-option strong {
+      display: block;
+      margin: 0.5rem 0;
+      color: #0d4d8b;
+    }
+    .plan-option small {
+      color: #666;
+      font-size: 0.85rem;
+    }
+    .signup-button {
+      width: 100%;
+      padding: 0.875rem;
+      background: #0d4d8b;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 1rem;
+    }
+    .signup-button:hover {
+      background: #0b3d70;
+    }
+    .login-link {
+      text-align: center;
+      margin-top: 1rem;
+      color: #666;
+    }
+    .login-link a {
+      color: #0d4d8b;
+      text-decoration: none;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+  <div class="alerts">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="alert {{ category }}">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+  </div>
+
+  <div class="signup-container">
+    <h1>Create Your POS Account</h1>
+    
+    <form method="post">
+      <div class="form-group">
+        <label>Company Name</label>
+        <input type="text" name="company_name" placeholder="e.g., Best Store Ltd" required>
+      </div>
+
+      <div class="form-group">
+        <label>Tenant Slug (for URL)</label>
+        <input type="text" name="slug" placeholder="e.g., best-store" required>
+      </div>
+
+      <div class="form-group">
+        <label>Admin Email</label>
+        <input type="email" name="contact_email" placeholder="admin@yourstore.com" required>
+      </div>
+
+      <div class="form-group">
+        <label>Admin Name</label>
+        <input type="text" name="admin_name" placeholder="Your full name" required>
+      </div>
+
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" name="admin_password" placeholder="Create a strong password" required>
+      </div>
+
+      <div class="form-group">
+        <label>Select Your Plan</label>
+        <div class="plan-options">
+          <div class="plan-option">
+            <input type="radio" name="plan" value="starter" checked>
+            <strong>Starter</strong>
+            <small>$99/mo<br>1 Branch, 5 Users</small>
+          </div>
+          <div class="plan-option">
+            <input type="radio" name="plan" value="pro">
+            <strong>Pro</strong>
+            <small>$299/mo<br>5 Branches, 20 Users</small>
+          </div>
+          <div class="plan-option">
+            <input type="radio" name="plan" value="enterprise">
+            <strong>Enterprise</strong>
+            <small>Custom<br>Unlimited</small>
+          </div>
+        </div>
+      </div>
+
+      <button type="submit" class="signup-button">Create Account</button>
+    </form>
+
+    <div class="login-link">
+      Already have an account? <a href="{{ url_for('login') }}">Log in</a>
+    </div>
+  </div>
+</body>
+</html>

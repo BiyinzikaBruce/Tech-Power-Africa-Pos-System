@@ -1,0 +1,24 @@
+{% extends 'layout.html' %}
+{% block content %}
+<h1>Record Sale</h1>
+<section class="card">
+  <form method="post">
+    <label>Branch</label>
+    <input type="text" value="{{ branch.name }}" readonly>
+    <label>Payment type</label>
+    <select name="payment_type" required>
+      <option value="cash">Cash</option>
+      <option value="mobile money">Mobile Money</option>
+    </select>
+    <div class="product-grid">
+      {% for product in products %}
+        <div class="product-row">
+          <span>{{ product.name }} (KES {{ product.price }})</span>
+          <input type="number" name="quantity_{{ product.id }}" min="0" value="0">
+        </div>
+      {% endfor %}
+    </div>
+    <button type="submit">Submit Sale</button>
+  </form>
+</section>
+{% endblock %}

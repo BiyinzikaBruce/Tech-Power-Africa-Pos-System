@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 600" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="bg3" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#091b3e"/>
+      <stop offset="100%" stop-color="#142b57"/>
+    </linearGradient>
+  </defs>
+  <rect width="900" height="600" fill="url(#bg3)"/>
+  <path d="M120 130h140c14 0 26 12 26 26v174c0 14-12 26-26 26H120c-14 0-26-12-26-26V156c0-14 12-26 26-26Z" fill="#11274f" stroke="#54d7ff" stroke-width="10"/>
+  <path d="M450 130h140c14 0 26 12 26 26v174c0 14-12 26-26 26H450c-14 0-26-12-26-26V156c0-14 12-26 26-26Z" fill="#15305d" stroke="#54d7ff" stroke-width="10"/>
+  <path d="M260 340h200c14 0 26 12 26 26v76c0 14-12 26-26 26H260c-14 0-26-12-26-26v-76c0-14 12-26 26-26Z" fill="#132c57" stroke="#54d7ff" stroke-width="10"/>
+  <rect x="145" y="180" width="100" height="32" rx="16" fill="#54d7ff" opacity="0.9"/>
+  <rect x="145" y="230" width="70" height="24" rx="12" fill="#54d7ff"/>
+  <rect x="475" y="180" width="120" height="32" rx="16" fill="#54d7ff" opacity="0.9"/>
+  <rect x="475" y="240" width="90" height="24" rx="12" fill="#54d7ff"/>
+  <rect x="290" y="380" width="160" height="32" rx="16" fill="#54d7ff" opacity="0.9"/>
+  <path d="M722 456c-12 0-22-10-22-22s10-22 22-22 22 10 22 22-10 22-22 22Z" fill="#54d7ff"/>
+  <line x1="722" y1="434" x2="630" y2="360" stroke="#54d7ff" stroke-width="12" stroke-linecap="round"/>
+  <line x1="722" y1="434" x2="460" y2="232" stroke="#54d7ff" stroke-width="12" stroke-linecap="round"/>
+  <text x="160" y="110" fill="#f7fbff" font-family="Segoe UI, sans-serif" font-size="42" font-weight="700">Clarity in Action</text>
+  <text x="160" y="540" fill="#a1b3d9" font-family="Segoe UI, sans-serif" font-size="24">Organize every sale, every team, every branch.</text>
+</svg>

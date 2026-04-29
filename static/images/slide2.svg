@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 600" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="bg2" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#121f43"/>
+      <stop offset="100%" stop-color="#1d2f61"/>
+    </linearGradient>
+  </defs>
+  <rect width="900" height="600" fill="url(#bg2)"/>
+  <rect x="140" y="150" width="240" height="260" rx="32" fill="#162b52" stroke="#54d7ff" stroke-width="10"/>
+  <rect x="520" y="170" width="240" height="240" rx="32" fill="#1b3a6e" stroke="#54d7ff" stroke-width="10"/>
+  <rect x="185" y="210" width="160" height="40" rx="16" fill="#54d7ff" opacity="0.9"/>
+  <rect x="560" y="220" width="140" height="34" rx="16" fill="#54d7ff" opacity="0.9"/>
+  <rect x="560" y="280" width="90" height="24" rx="12" fill="#54d7ff"/>
+  <rect x="560" y="320" width="160" height="24" rx="12" fill="#54d7ff"/>
+  <circle cx="520" cy="470" r="60" fill="#0d203e" stroke="#54d7ff" stroke-width="10"/>
+  <path d="M520 440L520 500" stroke="#54d7ff" stroke-width="12" stroke-linecap="round"/>
+  <path d="M500 470h40" stroke="#54d7ff" stroke-width="12" stroke-linecap="round"/>
+  <text x="180" y="120" fill="#f7fbff" font-family="Segoe UI, sans-serif" font-size="42" font-weight="700">Smart Checkout</text>
+  <text x="180" y="540" fill="#a1b3d9" font-family="Segoe UI, sans-serif" font-size="24">Designed for fast store flow.</text>
+</svg>

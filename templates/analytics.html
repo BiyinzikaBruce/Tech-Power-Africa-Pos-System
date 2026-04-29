@@ -1,0 +1,40 @@
+{% extends 'layout.html' %}
+{% block content %}
+<h1>Sales Analytics</h1>
+<section class="card">
+  <canvas id="salesChart" width="400" height="200"></canvas>
+</section>
+<section>
+  <h2>Sales totals by branch</h2>
+  <table>
+    <thead><tr><th>Branch</th><th>Day totals</th></tr></thead>
+    <tbody>
+      {% for branch, values in sales_by_branch.items() %}
+        <tr><td>{{ branch }}</td><td>{{ values | join(', ') }}</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  const labels = {{ labels | tojson }};
+  const datasets = Object.entries({{ sales_by_branch | tojson }}).map(([branch, values], index) => ({
+    label: branch,
+    data: values,
+    borderColor: ['#0d4d8b', '#c0392b', '#16a085', '#f39c12', '#8e44ad'][index % 5],
+    backgroundColor: 'rgba(13, 77, 139, 0.2)',
+    fill: true,
+    tension: 0.2
+  }));
+  new Chart(document.getElementById('salesChart'), {
+    type: 'line',
+    data: { labels, datasets },
+    options: {
+      responsive: true,
+      scales: {
+        y: { beginAtZero: true }
+      }
+    }
+  });
+</script>
+{% endblock %}

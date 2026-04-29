@@ -1,0 +1,55 @@
+{% extends 'layout.html' %}
+{% block content %}
+<h1>Daily Reports</h1>
+<section class="card">
+  <form method="get" action="{{ url_for('daily_reports') }}">
+    <label>Date</label>
+    <input type="date" name="date" value="{{ query_date }}">
+    <button type="submit">View</button>
+  </form>
+</section>
+<section class="card">
+  <form method="post" action="{{ url_for('send_email_report') }}">
+    <input type="hidden" name="date" value="{{ query_date }}">
+    <label>Send report to email</label>
+    <input type="email" name="admin_email" placeholder="admin@example.com" required>
+    <button type="submit">Send Email</button>
+  </form>
+</section>
+<section class="card">
+  <h3>Scheduled daily report</h3>
+  <p>Time: {{ schedule_time }}</p>
+  {% if recipients %}
+    <p>Recipients: {{ recipients | join(', ') }}</p>
+  {% endif %}
+</section>
+<section>
+  <h2>Summary for {{ query_date }}</h2>
+  <table>
+    <thead><tr><th>Branch</th><th>Sales Count</th><th>Total</th></tr></thead>
+    <tbody>
+      {% for branch, data in summary.items() %}
+        <tr><td>{{ branch }}</td><td>{{ data.count }}</td><td>{{ data.total }}</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>
+<section>
+  <h2>Sales</h2>
+  <table>
+    <thead><tr><th>ID</th><th>Branch</th><th>Cashier</th><th>Payment</th><th>Total</th><th>Date</th></tr></thead>
+    <tbody>
+      {% for sale in sales %}
+        <tr>
+          <td>{{ sale.id }}</td>
+          <td>{{ sale.branch.name }}</td>
+          <td>{{ sale.user.name }}</td>
+          <td>{{ sale.payment_type }}</td>
+          <td>{{ sale.total_amount }}</td>
+          <td>{{ sale.date }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>
+{% endblock %}

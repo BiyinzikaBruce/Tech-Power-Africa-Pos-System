@@ -1,0 +1,25 @@
+{% extends 'layout.html' %}
+{% block content %}
+<h1>Profit Reports</h1>
+<section class="card">
+  <form method="get" action="{{ url_for('profit_reports') }}">
+    <label>Start date</label>
+    <input type="date" name="start_date" value="{{ start_date }}">
+    <label>End date</label>
+    <input type="date" name="end_date" value="{{ end_date }}">
+    <button type="submit">View</button>
+  </form>
+</section>
+<section>
+  <h2>Profit summary from {{ start_date }} to {{ end_date }}</h2>
+  <table>
+    <thead><tr><th>Branch</th><th>Total Sales</th><th>Total Profit</th></tr></thead>
+    <tbody>
+      {% for branch, data in branch_profits.items() %}
+        <tr><td>{{ branch }}</td><td>{{ data.sales }}</td><td>{{ data.profit }}</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <p><strong>Total profit: KES {{ total_profit }}</strong></p>
+</section>
+{% endblock %}

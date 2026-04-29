@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>API Keys - Tech Power Africa POS</title>
+  <link rel="stylesheet" href="/static/style.css">
+  <style>
+    .page-header {
+      background: #0d4d8b;
+      color: white;
+      padding: 2rem;
+      margin-bottom: 2rem;
+    }
+    .page-header h1 {
+      margin: 0;
+    }
+    .section {
+      background: white;
+      padding: 1.5rem;
+      border-radius: 8px;
+      box-shadow: 0 1px 6px rgba(0,0,0,0.08);
+      margin-bottom: 2rem;
+    }
+    .section h2 {
+      margin-top: 0;
+      color: #0d4d8b;
+      border-bottom: 2px solid #f5f7fa;
+      padding-bottom: 0.75rem;
+    }
+    .form-group {
+      margin-bottom: 1rem;
+    }
+    .form-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+      color: #333;
+    }
+    .form-group input {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 1rem;
+    }
+    .button {
+      display: inline-block;
+      padding: 0.75rem 1.5rem;
+      background: #0d4d8b;
+      color: white;
+      text-decoration: none;
+      border-radius: 6px;
+      border: none;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    .button:hover {
+      background: #0b3d70;
+    }
+    .button.danger {
+      background: #d9534f;
+    }
+    .button.danger:hover {
+      background: #c9302c;
+    }
+    .api-key-item {
+      background: #f5f7fa;
+      padding: 1rem;
+      border-radius: 6px;
+      margin-bottom: 1rem;
+      border: 1px solid #ddd;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .key-info h3 {
+      margin: 0 0 0.5rem;
+      color: #333;
+    }
+    .key-value {
+      font-family: monospace;
+      background: white;
+      padding: 0.5rem;
+      border-radius: 4px;
+      border: 1px solid #ddd;
+      overflow-x: auto;
+      font-size: 0.85rem;
+      margin: 0.5rem 0;
+      word-break: break-all;
+    }
+    .key-meta {
+      font-size: 0.85rem;
+      color: #999;
+    }
+    .key-actions {
+      display: flex;
+      gap: 1rem;
+    }
+    .nav-links {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+    .nav-links a {
+      color: #0d4d8b;
+      text-decoration: none;
+      font-weight: 600;
+      border-bottom: 2px solid transparent;
+      padding-bottom: 0.25rem;
+      transition: border-color 0.3s;
+    }
+    .nav-links a.active {
+      border-color: #0d4d8b;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="banner">Tech Power Africa POS - API Keys</div>
+    <nav>
+      <a href="{{ url_for('dashboard') }}">Back to App</a>
+      <a href="{{ url_for('tenant_dashboard') }}">Tenant Dashboard</a>
+      <a href="{{ url_for('tenant_settings') }}">Settings</a>
+      <a class="logout" href="{{ url_for('logout') }}">Logout</a>
+    </nav>
+  </header>
+
+  <main>
+    <div class="alerts">
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          {% for category, message in messages %}
+            <div class="alert {{ category }}">{{ message }}</div>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+    </div>
+
+    <div class="section">
+      <h2>Create New API Key</h2>
+      <p>Generate API credentials for integrations and external access.</p>
+      
+      <form method="post" action="{{ url_for('create_api_key') }}">
+        <div class="form-group">
+          <label>Key Name</label>
+          <input type="text" name="name" placeholder="e.g., Mobile App, External Integration" required>
+        </div>
+        <button type="submit" class="button">Create API Key</button>
+      </form>
+    </div>
+
+    <div class="section">
+      <h2>Your API Keys</h2>
+      {% if api_keys %}
+        {% for key in api_keys %}
+        <div class="api-key-item">
+          <div class="key-info">
+            <h3>{{ key.name }}</h3>
+            <div class="key-value">{{ key.key }}</div>
+            <div class="key-meta">
+              Created: {{ key.created_at.strftime('%Y-%m-%d %H:%M') }}
+              | Status: 
+              {% if key.is_active %}
+                <span style="color: green;">✓ Active</span>
+              {% else %}
+                <span style="color: red;">✗ Inactive</span>
+              {% endif %}
+              {% if key.last_used %}
+                | Last used: {{ key.last_used.strftime('%Y-%m-%d %H:%M') }}
+              {% else %}
+                | Never used
+              {% endif %}
+            </div>
+          </div>
+          <div class="key-actions">
+            <form method="post" action="{{ url_for('delete_api_key', key_id=key.id) }}" style="margin: 0;">
+              <button type="submit" class="button danger" onclick="return confirm('Delete this key? This cannot be undone.')">Delete</button>
+            </form>
+          </div>
+        </div>
+        {% endfor %}
+      {% else %}
+        <p style="color: #999;">No API keys yet. Create one above to get started.</p>
+      {% endif %}
+    </div>
+
+    <div class="section" style="background: #f0f8ff; border: 1px solid #b0d4ff;">
+      <h3 style="margin-top: 0; color: #0d4d8b;">How to Use API Keys</h3>
+      <p><strong>Authentication:</strong> Include your API key in the request header:</p>
+      <div class="key-value">Authorization: Bearer YOUR_API_KEY</div>
+      <p><strong>Base URL:</strong></p>
+      <div class="key-value">https://{{ request.host }}/api/v1</div>
+      <p><strong>Endpoints available:</strong></p>
+      <ul>
+        <li><code>POST /api/v1/sales</code> - Record a sale</li>
+        <li><code>GET /api/v1/sales</code> - List sales</li>
+        <li><code>GET /api/v1/products</code> - List products</li>
+        <li><code>GET /api/v1/branches</code> - List branches</li>
+        <li><code>GET /api/v1/usage</code> - Get usage stats</li>
+      </ul>
+    </div>
+  </main>
+
+  <footer>
+    <p>&copy; {{ current_year }} Tech Power Africa. All rights reserved.</p>
+  </footer>
+</body>
+</html>

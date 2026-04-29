@@ -1,0 +1,40 @@
+{% extends 'layout.html' %}
+{% block content %}
+<h1>Users</h1>
+<section class="card">
+  <form method="post">
+    <label>Name</label>
+    <input type="text" name="name" required>
+    <label>Email</label>
+    <input type="email" name="email" required>
+    <label>Password</label>
+    <input type="password" name="password" required>
+    <label>Role</label>
+    <select name="role">
+      <option value="supervisor">Supervisor</option>
+      <option value="manager">Manager</option>
+      <option value="cashier">Cashier</option>
+      <option value="admin">Admin</option>
+    </select>
+    <label>Branch</label>
+    <select name="branch_id">
+      <option value="">None</option>
+      {% for branch in branches %}
+        <option value="{{ branch.id }}">{{ branch.name }}</option>
+      {% endfor %}
+    </select>
+    <button type="submit">Create User</button>
+  </form>
+</section>
+<section>
+  <h2>Existing Users</h2>
+  <table>
+    <thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Branch</th></tr></thead>
+    <tbody>
+      {% for user in users %}
+        <tr><td>{{ user.name }}</td><td>{{ user.email }}</td><td>{{ user.role }}</td><td>{{ user.branch.name if user.branch else '-' }}</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>
+{% endblock %}

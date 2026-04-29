@@ -1,0 +1,303 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tenant Dashboard - Tech Power Africa POS</title>
+  <link rel="stylesheet" href="/static/style.css">
+  <style>
+    .dashboard-header {
+      background: #0d4d8b;
+      color: white;
+      padding: 2rem;
+      margin-bottom: 2rem;
+    }
+    .dashboard-header h1 {
+      margin: 0 0 0.5rem;
+    }
+    .dashboard-header p {
+      margin: 0;
+      opacity: 0.9;
+    }
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    .metric-card {
+      background: white;
+      padding: 1.5rem;
+      border-radius: 8px;
+      box-shadow: 0 1px 6px rgba(0,0,0,0.08);
+      border-left: 4px solid #0d4d8b;
+    }
+    .metric-label {
+      font-size: 0.9rem;
+      color: #666;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+    .metric-value {
+      font-size: 2.4rem;
+      font-weight: bold;
+      color: #0d4d8b;
+      margin-bottom: 0.5rem;
+    }
+    .metric-detail {
+      font-size: 0.85rem;
+      color: #999;
+    }
+    .progress-bar {
+      background: #eee;
+      border-radius: 4px;
+      height: 8px;
+      overflow: hidden;
+      margin-top: 0.75rem;
+    }
+    .progress-fill {
+      background: #0d4d8b;
+      height: 100%;
+      transition: width 0.3s;
+    }
+    .section {
+      background: white;
+      padding: 1.5rem;
+      border-radius: 8px;
+      box-shadow: 0 1px 6px rgba(0,0,0,0.08);
+      margin-bottom: 2rem;
+    }
+    .section h2 {
+      margin-top: 0;
+      color: #0d4d8b;
+      border-bottom: 2px solid #f5f7fa;
+      padding-bottom: 0.75rem;
+    }
+    .invoice-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .invoice-table th, .invoice-table td {
+      padding: 0.75rem;
+      text-align: left;
+      border-bottom: 1px solid #eee;
+    }
+    .invoice-table th {
+      background: #f5f7fa;
+      font-weight: 600;
+      color: #333;
+    }
+    .status-badge {
+      display: inline-block;
+      padding: 0.35rem 0.75rem;
+      border-radius: 4px;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+    .status-pending {
+      background: #fff4ce;
+      color: #665200;
+    }
+    .status-paid {
+      background: #d5f0d4;
+      color: #1f5a19;
+    }
+    .status-overdue {
+      background: #f8d7da;
+      color: #721c24;
+    }
+    .action-buttons {
+      display: flex;
+      gap: 1rem;
+      margin-top: 1.5rem;
+    }
+    .button {
+      display: inline-block;
+      padding: 0.75rem 1.5rem;
+      background: #0d4d8b;
+      color: white;
+      text-decoration: none;
+      border-radius: 6px;
+      font-weight: 600;
+      transition: background 0.3s;
+    }
+    .button:hover {
+      background: #0b3d70;
+    }
+    .button.secondary {
+      background: #666;
+    }
+    .button.secondary:hover {
+      background: #555;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="banner">Tech Power Africa POS - Tenant Dashboard</div>
+    <nav>
+      <a href="{{ url_for('dashboard') }}">Back to App</a>
+      <a href="{{ url_for('manage_api_keys') }}">API Keys</a>
+      <a href="{{ url_for('tenant_settings') }}">Settings</a>
+      <a class="logout" href="{{ url_for('logout') }}">Logout</a>
+    </nav>
+  </header>
+
+  <main>
+    <div class="dashboard-header">
+      <h1>{{ tenant.name }}</h1>
+      <p>License Key: {{ tenant.license_key }} | Plan: <strong>{{ tenant.plan|upper }}</strong></p>
+    </div>
+
+    <div class="alerts">
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          {% for category, message in messages %}
+            <div class="alert {{ category }}">{{ message }}</div>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+    </div>
+
+    <!-- Usage Metrics -->
+    <div class="dashboard-grid">
+      <div class="metric-card">
+        <div class="metric-label">Total Sales This Month</div>
+        <div class="metric-value">{{ sales_count }}</div>
+        <div class="metric-detail">Transactions recorded</div>
+      </div>
+
+      <div class="metric-card">
+        <div class="metric-label">Active Users</div>
+        <div class="metric-value">{{ user_count }}</div>
+        <div class="metric-detail">
+          {% if user_count > limits.max_users %}
+            ⚠️ Exceeds plan limit ({{ limits.max_users }})
+          {% else %}
+            {{ limits.max_users - user_count }} more slots available
+          {% endif %}
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" style="width: {{ (user_count / limits.max_users * 100)|int }}%"></div>
+        </div>
+      </div>
+
+      <div class="metric-card">
+        <div class="metric-label">Branches</div>
+        <div class="metric-value">{{ branch_count }}</div>
+        <div class="metric-detail">
+          {% if branch_count > limits.max_branches %}
+            ⚠️ Exceeds plan limit ({{ limits.max_branches }})
+          {% else %}
+            {{ limits.max_branches - branch_count }} more slots available
+          {% endif %}
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" style="width: {{ (branch_count / limits.max_branches * 100)|int }}%"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Current Invoice -->
+    {% if invoice %}
+    <div class="section">
+      <h2>Current Invoice - {{ invoice.month }}</h2>
+      <table style="width: 100%; border-collapse: collapse;">
+        <tr style="border-bottom: 1px solid #eee;">
+          <td style="padding: 0.75rem;"><strong>Base Fee</strong></td>
+          <td style="padding: 0.75rem; text-align: right;">${{ "%.2f"|format(invoice.base_fee) }}</td>
+        </tr>
+        <tr style="border-bottom: 1px solid #eee;">
+          <td style="padding: 0.75rem;"><strong>Transaction Fee</strong> ({{ sales_count }} sales)</td>
+          <td style="padding: 0.75rem; text-align: right;">${{ "%.2f"|format(invoice.transaction_fee) }}</td>
+        </tr>
+        {% if invoice.extra_user_fee > 0 %}
+        <tr style="border-bottom: 1px solid #eee;">
+          <td style="padding: 0.75rem;"><strong>Extra User Fee</strong> ({{ user_count - limits.max_users }} extra users)</td>
+          <td style="padding: 0.75rem; text-align: right;">${{ "%.2f"|format(invoice.extra_user_fee) }}</td>
+        </tr>
+        {% endif %}
+        <tr style="background: #f5f7fa;">
+          <td style="padding: 0.75rem;"><strong>Total Due</strong></td>
+          <td style="padding: 0.75rem; text-align: right; font-size: 1.3rem; color: #0d4d8b;"><strong>${{ "%.2f"|format(invoice.total) }}</strong></td>
+        </tr>
+      </table>
+      <div style="margin-top: 1rem;">
+        <span class="status-badge status-{{ invoice.status.lower() }}">{{ invoice.status|upper }}</span>
+        {% if invoice.due_date %}
+          <span style="color: #666; margin-left: 1rem;">Due: {{ invoice.due_date.strftime('%Y-%m-%d') }}</span>
+        {% endif %}
+      </div>
+    </div>
+    {% endif %}
+
+    <!-- Usage Log -->
+    <div class="section">
+      <h2>Recent Usage Activity</h2>
+      {% if usage_logs %}
+      <table class="invoice-table">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Metric</th>
+            <th>Value</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for log in usage_logs[:20] %}
+          <tr>
+            <td>{{ log.date.strftime('%Y-%m-%d %H:%M') }}</td>
+            <td><strong>{{ log.metric }}</strong></td>
+            <td>{{ log.value }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% else %}
+      <p style="color: #999;">No usage activity yet.</p>
+      {% endif %}
+    </div>
+
+    <!-- Billing History -->
+    <div class="section">
+      <h2>Billing History</h2>
+      {% if invoices %}
+      <table class="invoice-table">
+        <thead>
+          <tr>
+            <th>Month</th>
+            <th>Base Fee</th>
+            <th>Transaction Fee</th>
+            <th>Total</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for inv in invoices %}
+          <tr>
+            <td><strong>{{ inv.month }}</strong></td>
+            <td>${{ "%.2f"|format(inv.base_fee) }}</td>
+            <td>${{ "%.2f"|format(inv.transaction_fee) }}</td>
+            <td><strong>${{ "%.2f"|format(inv.total) }}</strong></td>
+            <td><span class="status-badge status-{{ inv.status.lower() }}">{{ inv.status|upper }}</span></td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% else %}
+      <p style="color: #999;">No billing history yet.</p>
+      {% endif %}
+    </div>
+
+    <div class="action-buttons">
+      <a href="{{ url_for('manage_api_keys') }}" class="button">Manage API Keys</a>
+      <a href="{{ url_for('tenant_settings') }}" class="button secondary">Account Settings</a>
+    </div>
+  </main>
+
+  <footer>
+    <p>&copy; {{ current_year }} Tech Power Africa. All rights reserved.</p>
+  </footer>
+</body>
+</html>

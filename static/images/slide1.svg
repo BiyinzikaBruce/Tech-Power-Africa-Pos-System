@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 600" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="bg1" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#091b3e"/>
+      <stop offset="100%" stop-color="#112f6b"/>
+    </linearGradient>
+  </defs>
+  <rect width="900" height="600" fill="url(#bg1)"/>
+  <circle cx="170" cy="150" r="100" fill="rgba(84,215,255,0.16)"/>
+  <rect x="260" y="180" width="380" height="260" rx="34" fill="#152a5c" stroke="#54d7ff" stroke-width="10"/>
+  <rect x="300" y="220" width="280" height="46" rx="14" fill="#54d7ff" opacity="0.9"/>
+  <rect x="320" y="300" width="150" height="28" rx="12" fill="#223d82"/>
+  <rect x="320" y="350" width="220" height="28" rx="12" fill="#223d82"/>
+  <rect x="320" y="400" width="190" height="28" rx="12" fill="#223d82"/>
+  <circle cx="660" cy="320" r="56" fill="#0f2146" stroke="#54d7ff" stroke-width="10"/>
+  <path d="M638 320h44" stroke="#54d7ff" stroke-width="12" stroke-linecap="round"/>
+  <path d="M660 298v44" stroke="#54d7ff" stroke-width="12" stroke-linecap="round"/>
+  <text x="280" y="120" fill="#f7fbff" font-family="Segoe UI, sans-serif" font-size="42" font-weight="700">Secure POS</text>
+  <text x="280" y="520" fill="#a1b3d9" font-family="Segoe UI, sans-serif" font-size="24">Fast checkout with polished data.</text>
+</svg>

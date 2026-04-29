@@ -1,0 +1,27 @@
+{% extends 'layout.html' %}
+{% block content %}
+<h1>Receipt</h1>
+<section class="card receipt-card">
+  <h2>Tech Power Africa</h2>
+  <p>Sale ID: {{ sale.id }}</p>
+  <p>Branch: {{ sale.branch.name }}</p>
+  <p>Cashier: {{ sale.user.name }}</p>
+  <p>Payment: {{ sale.payment_type }}</p>
+  <p>Date: {{ sale.date }}</p>
+  <table>
+    <thead><tr><th>Product</th><th>Qty</th><th>Unit</th><th>Total</th></tr></thead>
+    <tbody>
+      {% for item in sale.items %}
+        <tr>
+          <td>{{ item.product.name }}</td>
+          <td>{{ item.quantity }}</td>
+          <td>{{ item.unit_price }}</td>
+          <td>{{ item.quantity * item.unit_price }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <p class="total">Total: KES {{ sale.total_amount }}</p>
+  <p>Thank you for shopping with Tech Power Africa.</p>
+</section>
+{% endblock %}

@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tech Power Africa POS</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <header>
+    <div class="banner">Tech Power Africa POS</div>
+    {% if current_user.is_authenticated %}
+      <nav>
+        <a href="{{ url_for('dashboard') }}">Dashboard</a>
+        {% if current_user.role == 'admin' %}
+          <a href="{{ url_for('manage_branches') }}">Branches</a>
+          <a href="{{ url_for('manage_users') }}">Users</a>
+          <a href="{{ url_for('manage_products') }}">Products</a>
+          <a href="{{ url_for('product_categories') }}">Categories</a>
+          <a href="{{ url_for('manage_stock') }}">Stock</a>
+          <a href="{{ url_for('transfer_stock') }}">Transfers</a>
+          <a href="{{ url_for('analytics') }}">Analytics</a>
+          <a href="{{ url_for('profit_reports') }}">Profits</a>
+          <a href="{{ url_for('daily_reports') }}">Reports</a>
+        {% elif current_user.role in ('manager', 'supervisor') %}
+          <a href="{{ url_for('manage_stock') }}">Stock</a>
+          <a href="{{ url_for('analytics') }}">Analytics</a>
+          <a href="{{ url_for('profit_reports') }}">Profits</a>
+          <a href="{{ url_for('daily_reports') }}">Reports</a>
+        {% elif current_user.role == 'cashier' %}
+          <a href="{{ url_for('record_sale') }}">Sale</a>
+        {% endif %}
+        <a href="{{ url_for('logout') }}" class="logout">Logout</a>
+      </nav>
+    {% endif %}
+  </header>
+
+  <main>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div class="alerts">
+          {% for category, message in messages %}
+            <div class="alert {{ category }}">{{ message }}</div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer>
+    <p>Tech Power Africa POS &copy; {{ current_year if current_year else '' }}</p>
+  </footer>
+</body>
+</html>

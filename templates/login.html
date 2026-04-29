@@ -1,0 +1,551 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tech Power Africa POS</title>
+  <link rel="stylesheet" href="/static/style.css">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: radial-gradient(circle at 10% 20%, rgba(84,215,255,0.12), transparent 18%), radial-gradient(circle at 90% 15%, rgba(255,131,195,0.14), transparent 20%), #060714;
+      color: #eef2ff;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(circle at 20% 8%, rgba(84,215,255,0.08), transparent 24%), radial-gradient(circle at 80% 90%, rgba(99,85,255,0.08), transparent 18%);
+      pointer-events: none;
+    }
+
+    .login-container {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1.08fr);
+      min-height: 100vh;
+    }
+
+    .login-pane {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 48px 40px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .login-pane.left {
+      background: linear-gradient(180deg, #050813 0%, #0f1835 100%);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      width: 100%;
+      max-width: 460px;
+      margin-bottom: 28px;
+    }
+
+    .brand img {
+      width: 76px;
+      height: 76px;
+      border-radius: 22px;
+      background: rgba(255,255,255,0.08);
+      padding: 16px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.22);
+    }
+
+    .brand-text h1 {
+      margin: 0;
+      font-size: 2rem;
+      letter-spacing: -0.03em;
+      color: #f7fbff;
+    }
+
+    .brand-text p {
+      margin: 6px 0 0;
+      color: #8ea1dc;
+      font-size: 0.98rem;
+      line-height: 1.5;
+    }
+
+    .hero {
+      width: 100%;
+      max-width: 460px;
+      margin-bottom: 32px;
+      text-align: left;
+    }
+
+    .hero h2 {
+      font-size: clamp(2.8rem, 4.5vw, 4.8rem);
+      margin: 0;
+      line-height: 0.98;
+      letter-spacing: -0.05em;
+      color: #fdfcff;
+    }
+
+    .hero span {
+      display: block;
+      margin-top: 18px;
+      color: #a8b5df;
+      font-size: 1rem;
+      line-height: 1.8;
+    }
+
+    .hero small {
+      display: block;
+      margin-top: 18px;
+      color: #6f83b5;
+      font-size: 0.95rem;
+    }
+
+    .login-card {
+      width: 100%;
+      max-width: 460px;
+      padding: 42px;
+      border-radius: 34px;
+      background: rgba(6, 12, 31, 0.94);
+      border: 1px solid rgba(255,255,255,0.08);
+      box-shadow: 0 40px 100px rgba(0,0,0,0.32);
+      backdrop-filter: blur(16px);
+    }
+
+    .login-card h3 {
+      margin: 0 0 24px;
+      font-size: 1.6rem;
+      color: #eef2ff;
+    }
+
+    .login-card label {
+      display: block;
+      margin-bottom: 10px;
+      color: #9da7d6;
+      font-weight: 600;
+    }
+
+    .login-card input {
+      width: 100%;
+      padding: 16px 18px;
+      margin-bottom: 18px;
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,0.14);
+      background: rgba(255,255,255,0.05);
+      color: #edf3ff;
+      font-size: 1rem;
+    }
+
+    .login-card input::placeholder {
+      color: #8f9dc7;
+    }
+
+    .login-card button {
+      width: 100%;
+      padding: 16px 18px;
+      border: none;
+      border-radius: 16px;
+      background: linear-gradient(135deg, #4e6cff 0%, #53d7ff 100%);
+      color: #071025;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .login-card button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 18px 40px rgba(83,215,255,0.24);
+    }
+
+    .demo-buttons {
+      margin-top: 26px;
+      display: grid;
+      gap: 12px;
+    }
+
+    .demo-btn {
+      width: 100%;
+      padding: 14px 16px;
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(255,255,255,0.05);
+      color: #f1f5ff;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.25s ease, border-color 0.25s ease;
+    }
+
+    .demo-btn:hover {
+      background: rgba(83,215,255,0.14);
+      border-color: rgba(83,215,255,0.35);
+    }
+
+    .progress-panel {
+      width: 100%;
+      max-width: 460px;
+      margin-top: 32px;
+      display: grid;
+      gap: 14px;
+    }
+
+    .progress-step {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      padding: 18px 20px;
+      border-radius: 22px;
+      background: rgba(83,215,255,0.08);
+      border: 1px solid rgba(83,215,255,0.12);
+    }
+
+    .progress-step .marker {
+      width: 14px;
+      height: 14px;
+      margin-top: 6px;
+      border-radius: 50%;
+      background: #54d7ff;
+      box-shadow: 0 0 0 4px rgba(84,215,255,0.18);
+      flex-shrink: 0;
+    }
+
+    .progress-step span {
+      color: #eaf0ff;
+      font-size: 0.99rem;
+      line-height: 1.6;
+    }
+
+    .login-pane.right {
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .carousel-shell {
+      width: 100%;
+      max-width: 760px;
+      height: 84vh;
+      min-height: 520px;
+      border-radius: 44px;
+      overflow: hidden;
+      position: relative;
+      background: #070d22;
+      box-shadow: 0 55px 140px rgba(1,10,40,0.42);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .carousel-bg {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, #08122f 0%, #071022 51%, #040717 100%);
+    }
+
+    .spark {
+      position: absolute;
+      border-radius: 999px;
+      background: rgba(83,215,255,0.16);
+      filter: blur(18px);
+      pointer-events: none;
+    }
+
+    .spark.one {
+      width: 220px;
+      height: 220px;
+      top: 14%;
+      left: -6%;
+    }
+
+    .spark.two {
+      width: 150px;
+      height: 150px;
+      bottom: 10%;
+      right: 6%;
+    }
+
+    .carousel-slide {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      opacity: 0;
+      transform: translateY(18px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+
+    .carousel-slide.active {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .carousel-card {
+      position: relative;
+      z-index: 2;
+      width: 86%;
+      max-width: 640px;
+      padding: 0;
+      border-radius: 36px;
+      overflow: hidden;
+      background: rgba(7,12,29,0.92);
+      border: 1px solid rgba(255,255,255,0.08);
+      box-shadow: 0 35px 75px rgba(0,0,0,0.22);
+      backdrop-filter: blur(14px);
+    }
+
+    .slide-image {
+      display: block;
+      width: 100%;
+      height: auto;
+      object-fit: cover;
+    }
+
+    .slide-copy {
+      padding: 26px 32px 32px;
+      background: linear-gradient(180deg, rgba(4,10,27,0.0) 0%, rgba(4,10,27,0.96) 90%);
+    }
+
+    .slide-copy h3 {
+      margin: 0 0 16px;
+      font-size: 2rem;
+      color: #f9fbff;
+      letter-spacing: -0.04em;
+      line-height: 1.05;
+    }
+
+    .slide-copy p {
+      margin: 0;
+      color: #c2c9eb;
+      font-size: 1rem;
+      line-height: 1.8;
+      max-width: 38rem;
+    }
+
+    .carousel-dots {
+      position: absolute;
+      bottom: 28px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 12px;
+      z-index: 3;
+    }
+
+    .dot {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.2);
+      border: 1px solid rgba(255,255,255,0.4);
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .dot.active {
+      width: 40px;
+      background: rgba(255,255,255,0.92);
+      border-color: transparent;
+    }
+
+    .status-badge {
+      position: absolute;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: inline-flex;
+      gap: 10px;
+      align-items: center;
+      padding: 12px 18px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+      color: #c8d6ff;
+      font-size: 0.95rem;
+      z-index: 3;
+    }
+
+    .status-badge strong {
+      color: #eef2ff;
+    }
+
+    @media (max-width: 1100px) {
+      .login-container {
+        grid-template-columns: 1fr;
+      }
+
+      .login-pane {
+        min-height: auto;
+      }
+
+      .carousel-shell {
+        width: 100%;
+        max-width: 100%;
+        height: 520px;
+        border-radius: 32px;
+      }
+    }
+
+    @media (max-width: 760px) {
+      .login-pane {
+        padding: 28px;
+      }
+
+      .hero h2 {
+        font-size: 2.6rem;
+      }
+
+      .carousel-shell {
+        height: 420px;
+      }
+
+      .login-card {
+        padding: 30px;
+      }
+
+      .progress-panel {
+        margin-top: 24px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="login-container">
+    <div class="login-pane left">
+      <div class="brand">
+        <img src="/static/images/logo.svg" alt="Tech Power Africa logo">
+        <div class="brand-text">
+          <h1>Tech Power Africa</h1>
+          <p>POS designed for branch control, retail analytics, and clear operations.</p>
+        </div>
+      </div>
+
+      <div class="hero">
+        <h2>From Chaos to Clarity</h2>
+        <span>Access branch-ready stock management, revenue reporting, and live analytics from your browser.</span>
+        <small>Visit <strong><span id="host-name">localhost:5000</span></strong> to preview your work instantly.</small>
+      </div>
+
+      <div class="login-card">
+        <h3>Sign in or start with a demo</h3>
+        <form method="post">
+          <label>Email</label>
+          <input type="email" name="email" placeholder="name@techpower.africa" required>
+          <label>Password</label>
+          <input type="password" name="password" placeholder="Type your password" required>
+          <button type="submit">Log In</button>
+        </form>
+
+        <div class="demo-buttons">
+          <button type="button" class="demo-btn" onclick="setDemo('admin@techpower.africa','admin123')">Admin demo</button>
+          <button type="button" class="demo-btn" onclick="setDemo('supervisor@techpower.africa','supervisor123')">Supervisor demo</button>
+          <button type="button" class="demo-btn" onclick="setDemo('manager@techpower.africa','manager123')">Manager demo</button>
+          <button type="button" class="demo-btn" onclick="setDemo('cashier@techpower.africa','cashier123')">Cashier demo</button>
+        </div>
+
+        <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.15); text-align: center;">
+          <p style="margin: 0 0 12px; color: #a8b5df; font-size: 0.9rem;">New to Tech Power Africa?</p>
+          <a href="{{ url_for('saas_signup') }}" style="display: inline-block; padding: 10px 16px; border-radius: 12px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: #f1f5ff; text-decoration: none; font-weight: 600; transition: all 0.25s; width: calc(100% - 32px - 2px);">Create Your Account</a>
+        </div>
+      </div>
+
+      <div class="progress-panel">
+        <div class="progress-step">
+          <div class="marker"></div>
+          <span>Role-based access and login flow finished.</span>
+        </div>
+        <div class="progress-step">
+          <div class="marker"></div>
+          <span>Branch dashboards, stock controls, and sales analytics are live.</span>
+        </div>
+        <div class="progress-step">
+          <div class="marker"></div>
+          <span>Daily reports, profit summaries, and local preview are ready.</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="login-pane right">
+      <div class="carousel-shell">
+        <div class="carousel-bg"></div>
+        <div class="spark one"></div>
+        <div class="spark two"></div>
+
+        <div class="carousel-slide active">
+          <div class="carousel-card">
+          <img class="slide-image" src="/static/images/slide1.svg" alt="Secure POS overview">
+          <div class="slide-copy">
+            <h3>Secure POS</h3>
+            <p>Fast checkout with polished data, branch controls, and a modern interface for your retail team.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="carousel-slide">
+        <div class="carousel-card">
+          <img class="slide-image" src="/static/images/slide2.svg" alt="Smart checkout visualization">
+          <div class="slide-copy">
+            <h3>Smart Checkout</h3>
+            <p>Keep stock movement, sales, and branch performance aligned with fast access to the right numbers.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="carousel-slide">
+        <div class="carousel-card">
+          <img class="slide-image" src="/static/images/slide3.svg" alt="Branch analytics and profit tracking">
+          <div class="slide-copy">
+            <h3>Clarity in Action</h3>
+            <p>Monitor profit, inventory, and daily sales with focused dashboards made for managers and supervisors.</p>
+          </div>
+        </div>
+      </div>
+
+        <div class="carousel-dots">
+          <span class="dot active" onclick="currentSlide(0)"></span>
+          <span class="dot" onclick="currentSlide(1)"></span>
+          <span class="dot" onclick="currentSlide(2)"></span>
+        </div>
+
+        <div class="status-badge">Live preview on <strong><span id="host-badge">localhost:5000</span></strong></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const slides = document.querySelectorAll('.carousel-slide');
+    const dots = document.querySelectorAll('.dot');
+    const hostName = document.getElementById('host-name');
+    const hostBadge = document.getElementById('host-badge');
+    let currentSlideIndex = 0;
+
+    function showSlide(index) {
+      slides.forEach((slide, idx) => slide.classList.toggle('active', idx === index));
+      dots.forEach((dot, idx) => dot.classList.toggle('active', idx === index));
+    }
+
+    function currentSlide(index) {
+      currentSlideIndex = index;
+      showSlide(index);
+    }
+
+    setInterval(() => {
+      currentSlideIndex = (currentSlideIndex + 1) % slides.length;
+      showSlide(currentSlideIndex);
+    }, 5000);
+
+    function setDemo(email, password) {
+      document.querySelector('input[name="email"]').value = email;
+      document.querySelector('input[name="password"]').value = password;
+    }
+
+    const hostText = window.location.host || 'localhost:5000';
+    if (hostName) hostName.textContent = hostText;
+    if (hostBadge) hostBadge.textContent = hostText;
+  </script>
+</body>
+</html>

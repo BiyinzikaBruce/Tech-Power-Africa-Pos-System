@@ -1,0 +1,24 @@
+{% extends 'layout.html' %}
+{% block content %}
+<h1>Branches</h1>
+<section class="card">
+  <form method="post">
+    <label>Branch name</label>
+    <input type="text" name="name" required>
+    <label>Location</label>
+    <input type="text" name="location">
+    <button type="submit">Add Branch</button>
+  </form>
+</section>
+<section>
+  <h2>Existing Branches</h2>
+  <table>
+    <thead><tr><th>Name</th><th>Location</th></tr></thead>
+    <tbody>
+      {% for branch in branches %}
+        <tr><td>{{ branch.name }}</td><td>{{ branch.location }}</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>
+{% endblock %}

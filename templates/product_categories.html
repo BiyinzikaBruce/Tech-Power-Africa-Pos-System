@@ -1,0 +1,17 @@
+{% extends 'layout.html' %}
+{% block content %}
+<h1>Product Categories</h1>
+{% for category, products in category_data.items() %}
+<section class="card">
+  <h2>{{ category }}</h2>
+  <table>
+    <thead><tr><th>SKU</th><th>Name</th><th>Cost</th><th>Price</th><th>Profit</th><th>Margin</th></tr></thead>
+    <tbody>
+      {% for product in products %}
+        <tr><td>{{ product.sku }}</td><td>{{ product.name }}</td><td>{{ product.cost }}</td><td>{{ product.price }}</td><td>{{ product.profit | round(2) }}</td><td>{{ product.margin | round(1) }}%</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>
+{% endfor %}
+{% endblock %}

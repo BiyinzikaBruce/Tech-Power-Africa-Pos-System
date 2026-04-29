@@ -1,0 +1,36 @@
+{% extends 'layout.html' %}
+{% block content %}
+<h1>Stock Management</h1>
+<section class="card">
+  <form method="post">
+    <label>Branch</label>
+    <select name="branch_id" required>
+      {% for branch in branches %}
+        <option value="{{ branch.id }}">{{ branch.name }}</option>
+      {% endfor %}
+    </select>
+    <label>Product</label>
+    <select name="product_id" required>
+      {% for product in products %}
+        <option value="{{ product.id }}">{{ product.name }}</option>
+      {% endfor %}
+    </select>
+    <label>Quantity to add</label>
+    <input type="number" name="quantity" value="1" min="1" required>
+    <label>Low-stock threshold</label>
+    <input type="number" name="alert_threshold" value="5" min="1" required>
+    <button type="submit">Update Stock</button>
+  </form>
+</section>
+<section>
+  <h2>Stock Levels</h2>
+  <table>
+    <thead><tr><th>Branch</th><th>Product</th><th>SKU</th><th>Quantity</th><th>Threshold</th><th>Status</th></tr></thead>
+    <tbody>
+      {% for item in stocks %}
+        <tr class="{% if item.is_low %}low-stock{% endif %}"><td>{{ item.branch.name }}</td><td>{{ item.product.name }}</td><td>{{ item.product.sku }}</td><td>{{ item.quantity }}</td><td>{{ item.alert_threshold }}</td><td>{{ 'LOW' if item.is_low else 'OK' }}</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>
+{% endblock %}

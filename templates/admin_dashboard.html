@@ -1,0 +1,59 @@
+{% extends 'layout.html' %}
+{% block content %}
+<h1>Admin Dashboard</h1>
+<section>
+  <h2>Branches</h2>
+  <div style="display: grid; gap: 12px;">
+    {% for branch in branches %}
+      <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px; border: 1px solid #ddd; border-radius: 4px;">
+        <div>
+          <strong>{{ branch.name }}</strong> <br>
+          <small style="color: #666;">{{ branch.location }}</small>
+        </div>
+        <a href="{{ url_for('branch_view', branch_id=branch.id) }}" class="button">View Branch</a>
+      </div>
+    {% endfor %}
+  </div>
+</section>
+<section>
+  <h2>Users</h2>
+  <table>
+    <thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Branch</th></tr></thead>
+    <tbody>
+      {% for user in users %}
+        <tr><td>{{ user.name }}</td><td>{{ user.email }}</td><td>{{ user.role }}</td><td>{{ user.branch.name if user.branch else '-' }}</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>
+<section>
+  <h2>Today's sales</h2>
+  <p>Total sales amount: KES {{ today_total }}</p>
+  <p><a href="{{ url_for('analytics') }}" class="button">View analytics</a></p>
+</section>
+<section>
+  <h2>Low stock alerts</h2>
+  <table>
+    <thead><tr><th>Branch</th><th>Product</th><th>Qty</th><th>Threshold</th></tr></thead>
+    <tbody>
+      {% for item in low_stock_alerts %}
+        <tr class="low-stock"><td>{{ item.branch.name }}</td><td>{{ item.product.name }}</td><td>{{ item.quantity }}</td><td>{{ item.alert_threshold }}</td></tr>
+      {% endfor %}
+      {% if not low_stock_alerts %}
+        <tr><td colspan="4">No low stock alerts.</td></tr>
+      {% endif %}
+    </tbody>
+  </table>
+</section>
+<section>
+  <h2>Products</h2>
+  <table>
+    <thead><tr><th>SKU</th><th>Name</th><th>Cost</th><th>Price</th><th>Profit</th><th>Margin</th></tr></thead>
+    <tbody>
+      {% for product in products %}
+        <tr><td>{{ product.sku }}</td><td>{{ product.name }}</td><td>{{ product.cost }}</td><td>{{ product.price }}</td><td>{{ product.profit | round(2) }}</td><td>{{ product.margin | round(1) }}%</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>
+{% endblock %}

@@ -1,0 +1,40 @@
+{% extends 'layout.html' %}
+{% block content %}
+<h1>Stock Transfer</h1>
+<section class="card">
+  <form method="post">
+    <label>Product</label>
+    <select name="product_id" required>
+      {% for product in products %}
+        <option value="{{ product.id }}">{{ product.name }}</option>
+      {% endfor %}
+    </select>
+    <label>From branch</label>
+    <select name="from_branch_id" required>
+      {% for branch in branches %}
+        <option value="{{ branch.id }}">{{ branch.name }}</option>
+      {% endfor %}
+    </select>
+    <label>To branch</label>
+    <select name="to_branch_id" required>
+      {% for branch in branches %}
+        <option value="{{ branch.id }}">{{ branch.name }}</option>
+      {% endfor %}
+    </select>
+    <label>Quantity</label>
+    <input type="number" name="quantity" value="1" min="1" required>
+    <button type="submit">Transfer</button>
+  </form>
+</section>
+<section>
+  <h2>Recent Transfers</h2>
+  <table>
+    <thead><tr><th>Product</th><th>From</th><th>To</th><th>Qty</th><th>Date</th></tr></thead>
+    <tbody>
+      {% for transfer in transfers %}
+        <tr><td>{{ transfer.product.name }}</td><td>{{ transfer.from_branch.name }}</td><td>{{ transfer.to_branch.name }}</td><td>{{ transfer.quantity }}</td><td>{{ transfer.date }}</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>
+{% endblock %}
