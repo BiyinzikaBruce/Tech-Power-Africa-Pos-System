@@ -3,6 +3,7 @@ import time
 import threading
 import secrets
 import hashlib
+import re
 from datetime import date, datetime, timedelta
 from functools import wraps
 from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
@@ -73,6 +74,14 @@ def log_usage(tenant_id, metric, value=1):
 def generate_license_key():
     """Generate unique license key for tenant"""
     return f'TPA-{secrets.token_hex(16).upper()}'
+
+
+def is_valid_email(email):
+    """Validate email address format"""
+    if not email:
+        return False
+    pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+    return re.match(pattern, email) is not None
 
 
 def generate_api_key_pair():
@@ -314,6 +323,9 @@ def manage_users():
         if not name or not email or not password:
             flash('Name, email, and password are required.', 'danger')
             return redirect(url_for('manage_users'))
+        if not is_valid_email(email):
+            flash('Please enter a valid email address.', 'danger')
+            return redirect(url_for('manage_users'))
         if User.query.filter_by(email=email).first():
             flash('User already exists.', 'warning')
             return redirect(url_for('manage_users'))
@@ -549,10 +561,15 @@ def daily_reports():
 @role_required('admin')
 def send_email_report():
     target_date = request.form.get('date') or date.today().isoformat()
-    admin_email = request.form.get('admin_email') or app.config['MAIL_DEFAULT_SENDER']
+    admin_email = request.form.get('admin_email', '').strip()
+    
     if not admin_email:
-        flash('Admin email is required.', 'danger')
+        admin_email = app.config.get('MAIL_DEFAULT_SENDER')
+    
+    if not admin_email or not is_valid_email(admin_email):
+        flash('Valid admin email is required.', 'danger')
         return redirect(url_for('daily_reports'))
+    
     body, sales, summary, total_sales = build_report_for_date(target_date)
     try:
         send_email(admin_email, f'Tech Power Africa Daily Sales {target_date}', body)
@@ -563,16 +580,35 @@ def send_email_report():
 
 
 def send_email(recipient, subject, body):
+    # Validate email addresses
+    if not is_valid_email(recipient):
+        raise ValueError(f'Invalid recipient email: {recipient}')
+    
+    sender = app.config.get('MAIL_DEFAULT_SENDER')
+    if not is_valid_email(sender):
+        raise ValueError(f'Invalid sender email: {sender}')
+    
+    # Skip email sending if credentials are not configured
+    if not app.config.get('MAIL_USERNAME') or not app.config.get('MAIL_PASSWORD'):
+        print(f'⚠️  Email sending skipped (MAIL_USERNAME or MAIL_PASSWORD not configured)')
+        print(f'To: {recipient}')
+        print(f'Subject: {subject}')
+        return
+    
     message = EmailMessage()
     message['Subject'] = subject
-    message['From'] = app.config['MAIL_DEFAULT_SENDER']
+    message['From'] = sender
     message['To'] = recipient
     message.set_content(body)
-    with smtplib.SMTP(app.config['MAIL_SERVER'], app.config['MAIL_PORT']) as smtp:
-        if app.config['MAIL_USE_TLS']:
-            smtp.starttls()
-        smtp.login(app.config['MAIL_USERNAME'], app.config['MAIL_PASSWORD'])
-        smtp.send_message(message)
+    try:
+        with smtplib.SMTP(app.config['MAIL_SERVER'], app.config['MAIL_PORT']) as smtp:
+            if app.config['MAIL_USE_TLS']:
+                smtp.starttls()
+            smtp.login(app.config['MAIL_USERNAME'], app.config['MAIL_PASSWORD'])
+            smtp.send_message(message)
+    except Exception as e:
+        print(f'Error sending email: {e}')
+        raise
 
 
 # ===== SAAS ROUTES =====
@@ -590,6 +626,10 @@ def saas_signup():
         
         if not all([company_name, slug, contact_email, admin_name, admin_password]):
             flash('All fields are required.', 'danger')
+            return redirect(url_for('saas_signup'))
+        
+        if not is_valid_email(contact_email):
+            flash('Please enter a valid email address.', 'danger')
             return redirect(url_for('saas_signup'))
         
         if Tenant.query.filter_by(slug=slug).first():

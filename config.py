@@ -13,6 +13,7 @@ class Config:
     MAIL_USE_TLS = os.environ.get('MAIL_USE_TLS', 'true').lower() in ('true', '1', 'yes')
     MAIL_USERNAME = os.environ.get('MAIL_USERNAME')
     MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD')
-    MAIL_DEFAULT_SENDER = os.environ.get('MAIL_DEFAULT_SENDER', os.environ.get('MAIL_USERNAME'))
-    REPORT_RECIPIENT_EMAILS = [email.strip() for email in os.environ.get('REPORT_RECIPIENT_EMAILS', MAIL_DEFAULT_SENDER or '').split(',') if email.strip()]
+    MAIL_DEFAULT_SENDER = os.environ.get('MAIL_DEFAULT_SENDER') or os.environ.get('MAIL_USERNAME') or 'noreply@techpower.africa'
+    _report_recipients_str = os.environ.get('REPORT_RECIPIENT_EMAILS', '')
+    REPORT_RECIPIENT_EMAILS = [email.strip() for email in _report_recipients_str.split(',') if email.strip()] if _report_recipients_str else []
     DAILY_REPORT_TIME = os.environ.get('DAILY_REPORT_TIME', '18:00')
