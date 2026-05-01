@@ -12,3 +12,5 @@ instance/
 build/
 dist/
 *.egg-info/
+.vercel
+.env*.local

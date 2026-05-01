@@ -13,7 +13,7 @@
     <div class="product-grid">
       {% for product in products %}
         <div class="product-row">
-          <span>{{ product.name }} (KES {{ product.price }})</span>
+          <span>{{ product.name }} (UGX {{ product.price }})</span>
           <input type="number" name="quantity_{{ product.id }}" min="0" value="0">
         </div>
       {% endfor %}

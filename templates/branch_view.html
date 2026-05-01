@@ -38,7 +38,7 @@
           <td>{{ sale.user.name }}</td>
           <td>{{ sale.items.count() }}</td>
           <td>{{ sale.payment_type }}</td>
-          <td>KES {{ sale.total_amount | round(2) }}</td>
+          <td>UGX {{ sale.total_amount | round(2) }}</td>
         </tr>
       {% endfor %}
       {% if not sales %}
